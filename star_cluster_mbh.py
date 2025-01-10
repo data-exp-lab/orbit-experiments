@@ -82,5 +82,36 @@ def export_to_hdf5(
             f[f"/sim_{i:05d}"].attrs["time"] = sim.t
 
 
+@app.command()
+def export_to_csv(
+    input: Annotated[str, typer.Option(help="File to read from")] = "output.bin",
+    output_prefix: Annotated[
+        str, typer.Option(help="Filename prefix for written files")
+    ] = "output",
+    shift: Annotated[
+        bool, typer.Option(help="Shift to reference frame of Black Hole")
+    ] = True,
+    length_units: Annotated[str, typer.Option(help="Length units for output")] = "AU",
+):
+    """Convert a binary output file to an HDF5 file."""
+    sims = rebound.Simulationarchive(input)
+    for i in range(len(sims)):
+        sim = sims[i]
+        xyz = np.zeros((sim.N, 3)) * unyt.AU
+        masses = np.zeros(sim.N)
+        sim.serialize_particle_data(xyz=xyz, m=masses)
+        xyz.convert_to_units(length_units)
+        if shift:
+            xyz -= xyz[0, :]
+        out = np.concatenate([xyz.d, masses[:, None]], axis=1)
+        np.savetxt(
+            f"{output_prefix}_{i:05d}.csv",
+            out,
+            delimiter=",",
+            header=f"# x [{length_units}], y [{length_units}], z [{length_units}], mass [Msun]",
+            comments=f"## time is {sim.t} days\n",
+        )
+
+
 if __name__ == "__main__":
     app()
