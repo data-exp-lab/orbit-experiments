@@ -25,14 +25,14 @@ def get_simulation(bh_mass: float):
 
 @app.command()
 def run_simulation(
-    radius: Annotated[float, typer.Argument(help="Radius of the cluster in ly")] = 2.0,
-    nstars: Annotated[int, typer.Argument(help="Number of stars")] = 25,
-    bh_mass: Annotated[float, typer.Argument(help="Mass of the black hole")] = 100.0,
-    t_final: Annotated[float, typer.Argument(help="Final time in years")] = 100.0,
+    radius: Annotated[float, typer.Option(help="Radius of the cluster in ly")] = 2.0,
+    nstars: Annotated[int, typer.Option(help="Number of stars")] = 25,
+    bh_mass: Annotated[float, typer.Option(help="Mass of the black hole")] = 100.0,
+    t_final: Annotated[float, typer.Option(help="Final time in years")] = 100.0,
     t_interval: Annotated[
-        float, typer.Argument(help="Interval of outputs in years")
+        float, typer.Option(help="Interval of outputs in years")
     ] = 1.0,
-    output: Annotated[str, typer.Argument(help="Output filename")] = "output.bin",
+    output: Annotated[str, typer.Option(help="Output filename")] = "output.bin",
 ):
     """Console script for htmdec_formats."""
     console.print(
@@ -61,10 +61,10 @@ def run_simulation(
 
 @app.command()
 def export_to_hdf5(
-    input: Annotated[str, typer.Argument(help="File to read from")] = "output.bin",
-    output: Annotated[str, typer.Argument(help="File to write")] = "output.hdf5",
+    input: Annotated[str, typer.Option(help="File to read from")] = "output.bin",
+    output: Annotated[str, typer.Option(help="File to write")] = "output.hdf5",
     shift: Annotated[
-        bool, typer.Argument(help="Shift to reference frame of Black Hole")
+        bool, typer.Option(help="Shift to reference frame of Black Hole")
     ] = True,
 ):
     """Convert a binary output file to an HDF5 file."""
