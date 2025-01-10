@@ -39,7 +39,7 @@ def run_simulation(
         f"Creating a star cluster with a central black hole (mass = {bh_mass} Msun) and {nstars} stars, radius of {radius} ly.  Evolving to {t_final} yr."
     )
     radius = radius * unyt.ly
-    bh_mass = bh_mass * unyt.Msun
+    bh_mass = bh_mass
     t_final = t_final * unyt.yr
     xyz_init = unyt.ly * np.random.normal(
         loc=0.0, scale=radius.in_units("ly").v / 2.5, size=(nstars, 3)
