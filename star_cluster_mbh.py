@@ -155,7 +155,11 @@ def export_orbits_to_csv(
     """Extract all orbits to individual CSV files."""
     sims = rebound.Simulationarchive(input)
     object_data = {_: {__: [] for __ in ["t", "x", "y", "z"]} for _ in range(sims[0].N)}
+    console.print(f"Converting {len(sims)} snapshots to CSV files.")
+    console.print(f"{'.' * (len(sims)//1000 + 1)}")
     for i in range(len(sims)):
+        if i % 1000 == 0:
+            console.print(".", end="")
         sim = sims[i]
         xyz = np.zeros((sims[0].N, 3)) * unyt.AU
         masses = np.zeros(sims[0].N)
