@@ -154,7 +154,9 @@ def export_orbits_to_csv(
 ):
     """Extract all orbits to individual CSV files."""
     sims = rebound.Simulationarchive(input)
-    object_data = {_: {__: [] for __ in ["t", "x", "y", "z"]} for _ in range(sims[0].N)}
+    object_data = {
+        _: {__: [] for __ in ["t", "m", "x", "y", "z"]} for _ in range(sims[0].N)
+    }
     console.print(f"Converting {len(sims)} snapshots to CSV files.")
     console.print(f"{'.' * (len(sims)//1000 + 1)}")
     for i in range(len(sims)):
@@ -171,8 +173,13 @@ def export_orbits_to_csv(
             object_data[j]["x"].append(xyz.d[j, 0])
             object_data[j]["y"].append(xyz.d[j, 1])
             object_data[j]["z"].append(xyz.d[j, 2])
+            object_data[j]["m"].append(masses[j])
             object_data[j]["t"].append((sim.t * unyt.day).in_units("yr").d)
-    for j in sorted(object_data):
+    console.print("Writing...")
+    console.print(f"{'.' * (len(object_data)//10 + 1)}")
+    for i, j in enumerate(sorted(object_data)):
+        if i % 10 == 0:
+            console.print("x", end="")
         pd.DataFrame(object_data[j]).to_csv(f"{output_prefix}_{j:05d}.csv", index=False)
 
 
